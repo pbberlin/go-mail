@@ -1,0 +1,20 @@
+~*
+*.log
+*.lnk
+*.key
+*.pem
+*.cert
+*.exe
+*.exe~
+./tests/tests
+tests/tests
+*.fdb
+out.csv
+*.json
+*.json.attrs
+
+tmp/*
+tmp*
+
+# corel
+Backup_of*.CDR
