@@ -3,10 +3,12 @@ package main
 import (
 	"encoding/csv"
 	"fmt"
+	"html/template"
 	"io"
 	"log"
 	"net/mail"
 	"os"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -20,8 +22,8 @@ type Recipient struct {
 	Title    string `csv:"title"`
 	Lastname string `csv:"lastname"`
 
-	Link     string `csv:"link"`
-	Language string `csv:"lang"`
+	Link     template.HTML `csv:"link"` // avoid escaping
+	Language string        `csv:"lang"`
 
 	Anrede          string `csv:"anrede"`
 	MonthYear       string `csv:"-"` // Oktober 2022, Octover 2022
@@ -98,14 +100,35 @@ var relayZimbra = RelayHorst{
 	External:     true,
 }
 
-func getText(survey, process, language string) (subject, body string) {
-	return "subject", "body"
+func getText(rec Recipient, survey, process, language string) (subject, body string) {
+	fn := fmt.Sprintf("%v-%v.md", process, language)
+	pth := filepath.Join(".", "tpl", survey, fn)
+	t, err := template.ParseFiles(pth)
+	if err != nil {
+		log.Fatalf("could not parse templates; %v", err)
+	}
+
+	// log.Printf("template parse success %v", t.Name())
+
+	sb := &strings.Builder{}
+	t.ExecuteTemplate(sb, fn, rec)
+
+	if strings.Contains(sb.String(), "\r\n") {
+		log.Fatalf("template %v contains \"r\"n - should be only \"n", t.Name())
+	}
+
+	lines := strings.Split(sb.String(), "\n")
+
+	return lines[0], strings.Join(lines[1:], "\n")
 }
 
-func sendSingle(rec Recipient) {
+func singleEmail(rec Recipient) {
 
-	m := gm.NewMessagePlain(getText("fmt", "invitation", rec.Language))
+	m := gm.NewMessagePlain(getText(rec, "fmt", "invitation", rec.Language))
 	// 	m = gm.NewMessageHTML(getSubject(subject, relayHorst.HostNamePort), getBody(senderHorst, true))
+	log.Printf("  subject: %v", m.Subject)
+	// log.Print(m.Body)
+	// return
 
 	m.From = mail.Address{}
 	m.From.Name = "Finanzmarkttest"
@@ -126,7 +149,7 @@ func sendSingle(rec Recipient) {
 
 	m.AddCustomHeader("X-CUSTOMER-id", "xxxxx")
 
-	log.Printf("sending via %s... to %+v", relayZimbra.HostNamePort, rec)
+	log.Printf("  sending via %s... to %v", relayZimbra.HostNamePort, rec.Lastname)
 	err := gm.Send(
 		relayZimbra.HostNamePort,
 		getAuth(relayZimbra.HostNamePort),
@@ -175,7 +198,7 @@ func ProcessCSV() error {
 			continue
 		}
 		log.Printf(
-			"record %v - %12v  %20v  %v",
+			"record %v - %12v  %26v  %v",
 			idx1,
 			rec.MonthYear,
 			rec.FullClosingDate,
@@ -196,7 +219,7 @@ func ProcessCSV() error {
 			rec.Title, rec.Lastname,
 			rec.Email,
 		)
-		// sendSingle(*rec)
+		singleEmail(*rec)
 	}
 
 	return nil

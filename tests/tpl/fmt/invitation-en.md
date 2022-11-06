@@ -2,13 +2,14 @@ ZEW Financial Market Survey - Your Questionnaire for {{.MonthYear}}
 {{.Anrede}},
 
 Please find your personal link to the new online questionnaire 
-for the ZEW Financial Market Survey (month of survey {{.MonthYear}}) below:
+for the ZEW Financial Market Survey for {{.MonthYear}} below:
 
 {{.Link}}
 
 Please fill out the questionnaire by {{.FullClosingDate}}.
 
-If you have any further queries or remarks, please do not hesitate to contact us. Many thanks in advance for your participation in the ZEW Financial Market Survey.
+If you have any further queries or remarks, please do not hesitate to contact us. 
+Thanks in advance for your participation in the ZEW Financial Market Survey.
 
 Best regards,
 

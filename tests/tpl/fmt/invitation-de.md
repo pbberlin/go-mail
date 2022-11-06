@@ -8,7 +8,8 @@ zum neuen ZEW-Finanzmarkttest Online-Fragebogen (Umfragemonat {{.MonthYear}}) zu
 
 Bitte füllen Sie den Fragebogen bis {{.FullClosingDate}} aus. 
 
-Für Rückfragen und Kommentare stehen wir Ihnen gerne zur Verfügung. Vielen Dank im Voraus für Ihre Teilnahme am ZEW-Finanzmarkttest.
+Für Rückfragen und Kommentare stehen wir Ihnen gerne zur Verfügung. 
+Vielen Dank im Voraus für Ihre Teilnahme am ZEW-Finanzmarkttest.
 
 Mit freundlichen Grüßen
 
