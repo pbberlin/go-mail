@@ -2,10 +2,13 @@ package main
 
 import (
 	"encoding/csv"
+	"fmt"
 	"io"
 	"log"
 	"net/mail"
 	"os"
+	"strings"
+	"time"
 
 	"github.com/gocarina/gocsv"
 	gm "github.com/zew/go-mail"
@@ -13,39 +16,81 @@ import (
 
 type Recipient struct {
 	Email    string `csv:"email"`
-	Sex      string `csv:"sex"`
+	Sex      int    `csv:"sex"`
 	Title    string `csv:"title"`
 	Lastname string `csv:"lastname"`
 
 	Link     string `csv:"link"`
 	Language string `csv:"lang"`
 
-	Salutation string `csv:"anrede"`
+	Anrede          string `csv:"anrede"`
+	MonthYear       string `csv:"-"` // Oktober 2022, Octover 2022
+	FullClosingDate string `csv:"-"` // Friday, 17th October 2022   Freitag, den 17. Oktober 2022,
 }
 
-/*
-	    	Concat(CASE sex
-	                WHEN 1 THEN 'Sehr geehrter Herr '
-	                WHEN 2 THEN 'Sehr geehrte Frau '
-	              END, title,
-	              CASE
-                    WHEN Length(title) > 0 THEN ' '
-                    ELSE ''
-                  END, lastname)                              AS 'anrede',
+func (r *Recipient) SetDerived() {
+	if r.Language == "de" {
+		if r.Sex == 1 {
+			r.Anrede = "Sehr geehrter Herr "
+		}
+		if r.Sex == 2 {
+			r.Anrede = "Sehr geehrte Frau "
+		}
+		if r.Title != "" {
+			r.Anrede += r.Title + " "
+		}
+		r.Anrede += r.Lastname
+	}
+	if r.Language == "en" {
+		if r.Sex == 1 {
+			r.Anrede = "Dear Mr. "
+		}
+		if r.Sex == 2 {
+			r.Anrede = "Dear Ms. "
+		}
+		if r.Title != "" {
+			r.Anrede = "Dear " + r.Title + " "
+		}
+		r.Anrede += r.Lastname
+	}
 
+	// now := time.Now()
+	// now = now.AddDate(0, 0, 5)
+	loc, err := time.LoadLocation("Europe/Berlin")
+	if err != nil {
+		loc = time.FixedZone("UTC_-2", -2*60*60)
+	}
+	now := time.Date(2022, 11, 11, 17, 0, 0, 0, loc)
+	// now = time.Date(2022, 11, 11+3, 17, 0, 0, 0, loc)
 
-                CASE title
-                WHEN ''    THEN
-                    CASE sex
-                        WHEN 1     THEN 'Dear Mr. '
-                        WHEN 2     THEN 'Dear Ms. '
-                    END
-                ELSE
-                    concat('Dear ',title)
-                END,
-                lastname
+	y := now.Year()
+	m := now.Month()
+	w := now.Weekday()
+	r.MonthYear = fmt.Sprintf("%v %v", MonthByInt(int(m), r.Language), y)
 
-*/
+	r.FullClosingDate = now.Format("Monday, 2. January 2006")
+
+	if r.Language == "de" {
+		r.FullClosingDate =
+			strings.Replace(
+				r.FullClosingDate,
+				MonthByInt(int(m), "en"),
+				MonthByInt(int(m), "de"),
+				-1,
+			)
+
+		r.FullClosingDate =
+			strings.Replace(
+				r.FullClosingDate,
+				WeekdayByInt(int(w), "en"),
+				WeekdayByInt(int(w), "de"),
+				-1,
+			)
+
+		r.FullClosingDate += "," // add apposition comma
+	}
+
+}
 
 var relayZimbra = RelayHorst{
 	HostNamePort: "zimbra.zew.de:25",
@@ -125,10 +170,17 @@ func ProcessCSV() error {
 	}
 
 	for idx1, rec := range recipients {
+		rec.SetDerived()
 		if idx1 > 5 || idx1 < len(recipients)-5 {
 			continue
 		}
-		log.Printf("record %v - %+v", idx1, rec)
+		log.Printf(
+			"record %v - %12v  %20v  %v",
+			idx1,
+			rec.MonthYear,
+			rec.FullClosingDate,
+			rec.Anrede,
+		)
 	}
 
 	// back to start of file

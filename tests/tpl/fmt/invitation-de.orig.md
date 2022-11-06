@@ -1,12 +1,12 @@
-ZEW-Finanzmarkttest - Ihr Fragebogen für {{.MonthYear}}
-{{.Anrede}},
+ZEW-Finanzmarkttest - Ihr Fragebogen für Oktober  2022
+[Anrede],
 
 wir senden Ihnen heute den aktuellen, persönlichen Link 
-zum neuen ZEW-Finanzmarkttest Online-Fragebogen (Umfragemonat {{.MonthYear}}) zu:
+zum neuen ZEW-Finanzmarkttest Online-Fragebogen (Umfragemonat Oktober 2022) zu:
 
-{{.Link}}
+[link]
 
-Bitte füllen Sie den Fragebogen bis {{.FullClosingDate}} aus. 
+Bitte füllen Sie den Fragebogen bis Freitag, den 17. Oktober 2022, aus. 
 
 Für Rückfragen und Kommentare stehen wir Ihnen gerne zur Verfügung. Vielen Dank im Voraus für Ihre Teilnahme am ZEW-Finanzmarkttest.
 

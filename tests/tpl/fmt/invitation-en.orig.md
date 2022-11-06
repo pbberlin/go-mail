@@ -1,12 +1,12 @@
-ZEW Financial Market Survey - Your Questionnaire for {{.MonthYear}}
-{{.Anrede}},
+ZEW Financial Market Survey - Your Questionnaire for October 2022
+[Anrede],
 
 Please find your personal link to the new online questionnaire 
-for the ZEW Financial Market Survey (month of survey {{.MonthYear}}) below:
+for the ZEW Financial Market Survey (month of survey October 2022) below:
 
-{{.Link}}
+[link]
 
-Please fill out the questionnaire by {{.FullClosingDate}}.
+Please fill out the questionnaire by 17th October 2022.
 
 If you have any further queries or remarks, please do not hesitate to contact us. Many thanks in advance for your participation in the ZEW Financial Market Survey.
 
