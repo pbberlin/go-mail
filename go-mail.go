@@ -1,7 +1,7 @@
 // Package email allows to send emails with attachments.
 // en.wikipedia.org/wiki/MIME
 // inspired by github.com/scorredoira/email
-package email
+package gomail
 
 import (
 	"bytes"

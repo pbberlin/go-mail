@@ -8,6 +8,8 @@
 *.exe~
 ./tests/tests
 tests/tests
+tests/tests
+tests/csv/**
 *.fdb
 out.csv
 *.json

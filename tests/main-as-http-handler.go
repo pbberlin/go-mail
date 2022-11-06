@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"net/http"
 	"net/http/httptest"
 )
@@ -11,11 +12,17 @@ func RegistrationFMTEnH(w http.ResponseWriter, r *http.Request) {
 	if false {
 		ExampleRaw()
 	}
-	ExampleUsingLib()
+	// ExampleUsingLib()
+	// gm.ReadCSVExample()
+	ProcessCSV()
 }
 
 func main() {
+
+	log.SetFlags(log.Lshortfile | log.Ltime)
+
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/", nil)
 	RegistrationFMTEnH(w, req)
+
 }
