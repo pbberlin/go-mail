@@ -6,17 +6,6 @@
 *.cert
 *.exe
 *.exe~
-./tests/tests
-tests/tests
-tests/tests
-tests/csv/**
-*.fdb
-out.csv
-*.json
-*.json.attrs
 
 tmp/*
 tmp*
-
-# corel
-Backup_of*.CDR

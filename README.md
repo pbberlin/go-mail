@@ -1,5 +1,5 @@
 # go-mail
 
-* Compose emails with file attachments
-* Read recipient data from CSV
-* Compose messages using templates, dynamic functions and files
+* Compose an SMTP emails with file attachments
+
+* Send an email via SMTP auth
