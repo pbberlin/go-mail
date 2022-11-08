@@ -1,7 +1,7 @@
 ZEW-Finanzmarkttest - Ihr Fragebogen für {{.MonthYear}}
 {{.Anrede}},
 
-wir senden Ihnen heute den aktuellen, persönlichen Link 
+wir senden Ihnen heute den aktuellen persönlichen Link 
 zum neuen ZEW-Finanzmarkttest Online-Fragebogen (Umfragemonat {{.MonthYear}}) zu:
 
 {{.Link}}

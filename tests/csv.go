@@ -21,6 +21,7 @@ type Recipient struct {
 	Sex      int    `csv:"sex"`
 	Title    string `csv:"title"`
 	Lastname string `csv:"lastname"`
+	NoMail   string `csv:"!Mail !Call"`
 
 	Link     template.HTML `csv:"link"` // avoid escaping
 	Language string        `csv:"lang"`
@@ -134,7 +135,11 @@ func singleEmail(rec Recipient) {
 	m.From.Name = "Finanzmarkttest"
 	m.From.Address = "noreply@zew.de"
 	m.To = []string{rec.Email}
+
 	m.ReplyTo = "finanzmarkttest@zew.de"
+	// return-path is a hidden email header
+	// indicating where bounced emails will be processed.
+	m.AddCustomHeader("Return-Path", m.ReplyTo)
 
 	// todo undeliverable emails
 	// m.
@@ -147,7 +152,7 @@ func singleEmail(rec Recipient) {
 		}
 	}
 
-	m.AddCustomHeader("X-CUSTOMER-id", "xxxxx")
+	m.AddCustomHeader("X-Mailer", "go-mail")
 
 	log.Printf("  sending via %s... to %v", relayZimbra.HostNamePort, rec.Lastname)
 	err := gm.Send(
@@ -158,7 +163,7 @@ func singleEmail(rec Recipient) {
 	if err != nil {
 		log.Printf(" error sending lib-email  %v:\n\t%v", relayZimbra, err)
 	} else {
-		log.Printf(" lib-email sent")
+		// log.Printf("  lib-email sent")
 	}
 }
 
@@ -213,13 +218,18 @@ func ProcessCSV() error {
 	}
 
 	for idx1, rec := range recipients {
-		log.Printf("sending #%03v - %2v - %1v - %10v %-16v - %-32v ",
+		log.Printf("#%03v - %2v - %1v - %10v %-16v - %-32v ",
 			idx1+1,
 			rec.Language, rec.Sex,
 			rec.Title, rec.Lastname,
 			rec.Email,
 		)
-		singleEmail(*rec)
+		if strings.Contains(rec.NoMail, "noMail") {
+			log.Printf("  skipping 'noMail'")
+			continue
+		}
+		// singleEmail(*rec)
+		time.Sleep(time.Second / 5)
 	}
 
 	return nil
