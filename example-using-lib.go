@@ -3,6 +3,7 @@ package gomail
 import (
 	"fmt"
 	"log"
+	"strings"
 )
 
 func ExampleUsingLib() {
@@ -28,15 +29,15 @@ func ExampleUsingLib() {
 		// attachments
 		imgs := []string{"ga1.gif", "ga2.gif", "ga3.gif"}
 		for _, fn := range imgs {
-			if err := m.Attach(fmt.Sprintf("./attachments/%v", fn)); err != nil {
+			if err := m.Attach(strings.ToUpper(fn), fmt.Sprintf("./attachments/%v", fn)); err != nil {
 				log.Fatal(err)
 			}
 		}
-		if err := m.Attach("./attachments/1.pdf"); err != nil {
+		if err := m.Attach("PDF1", "./attachments/1.pdf"); err != nil {
 			log.Fatal(err)
 		}
 		// use Inline to display the attachment inline.
-		if err := m.AttachInline("./attachments/2.pdf"); err != nil {
+		if err := m.AttachInline("PDF2", "./attachments/2.pdf"); err != nil {
 			log.Fatal(err)
 		}
 

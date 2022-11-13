@@ -152,18 +152,22 @@ func cleanseFN(fn string) string {
 	return fn + xt
 }
 
-func (m *Message) attach(file string, inline bool) error {
+func (m *Message) attach(label, file string, inline bool) error {
 
 	data, err := os.ReadFile(file)
 	if err != nil {
 		return err
 	}
 
-	filename := filepath.Base(file)
-	filename = cleanseFN(filename)
+	labelClean := label
+
+	if label == "" || label == file {
+		labelClean = filepath.Base(file)
+		labelClean = cleanseFN(labelClean)
+	}
 
 	att := Attachment{
-		Filename: filename,
+		Filename: labelClean,
 		Data:     data,
 		Inline:   inline,
 	}
@@ -174,14 +178,14 @@ func (m *Message) attach(file string, inline bool) error {
 }
 
 // Attach attaches a file.
-func (m *Message) Attach(file string) error {
-	return m.attach(file, false)
+func (m *Message) Attach(label, file string) error {
+	return m.attach(label, file, false)
 }
 
 // AttachInline -  includes file as inline attachment;
 // not implemented
-func (m *Message) AttachInline(file string) error {
-	return m.attach(file, true)
+func (m *Message) AttachInline(label, file string) error {
+	return m.attach(label, file, true)
 }
 
 // AttachByteSlice - for binary attachment.
