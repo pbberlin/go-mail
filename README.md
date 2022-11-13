@@ -1,5 +1,7 @@
 # go-mail
 
-* Compose an SMTP emails with file attachments
+* Composing SMTP email with file attachments
 
-* Send an email via SMTP auth
+* Sending email with SMTP auth
+
+* Early beta
