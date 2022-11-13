@@ -1,0 +1,11 @@
+~*
+*.log
+*.lnk
+*.key
+*.pem
+*.cert
+*.exe
+*.exe~
+
+tmp/*
+tmp*
