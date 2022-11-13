@@ -37,9 +37,9 @@ func ExampleRaw() {
 		log.Printf("sending via %s... to %v", relayHorst.HostNamePort, relayHorst.Filter(to))
 		err := smtp.SendMail(
 			relayHorst.HostNamePort,
-			getAuth(relayHorst.HostNamePort), // smtp.Auth interface
-			getFrom(senderHorst).Address,     // from
-			relayHorst.Filter(to),            // twice - once here - and above in the headers
+			relayHorst.getAuth(),
+			getFrom(senderHorst).Address, // from
+			relayHorst.Filter(to),        // twice - once here - and above in the headers
 			bf.Bytes(),
 		)
 		if err != nil {

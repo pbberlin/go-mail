@@ -45,7 +45,7 @@ func ExampleUsingLib() {
 		log.Printf("sending via %s... to %v", relayHorst.HostNamePort, toRecipient)
 		err := Send(
 			relayHorst.HostNamePort,
-			getAuth(relayHorst.HostNamePort),
+			relayHorst.getAuth(),
 			m,
 		)
 		if err != nil {

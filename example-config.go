@@ -18,6 +18,7 @@ import (
 
 type RelayHorst struct {
 	HostNamePort string
+	Username     string
 	Internal     bool
 	External     bool
 }
@@ -35,6 +36,42 @@ func (rh RelayHorst) Filter(addresses []string) []string {
 		filtered = append(filtered, addr)
 	}
 	return filtered
+}
+
+func (rh RelayHorst) PasswortEnv() string {
+	pureHost := strings.Split(rh.HostNamePort, ":")[0]
+	env := fmt.Sprintf("PW_%v", pureHost)
+	env = strings.Replace(env, ".", "", -1)
+	env = strings.ToUpper(env)
+	return env
+}
+
+func (rh RelayHorst) getAuth() (auth smtp.Auth) {
+
+	if rh.Username == "" {
+		return nil
+	}
+
+	pureHost := strings.Split(rh.HostNamePort, ":")[0]
+	env := rh.PasswortEnv()
+	pw := os.Getenv(env)
+	if pw == "" {
+		log.Fatalf(`Set password for %v via ENV %v
+		SET %v=secret 
+		export %v=secret  
+		`,
+			pureHost, env,
+			env,
+			env,
+		)
+	}
+
+	return smtp.PlainAuth(
+		"",
+		rh.Username,
+		pw,
+		pureHost,
+	)
 }
 
 var relayHorsts = []RelayHorst{}
@@ -115,20 +152,6 @@ func getBody(senderHorst string, html bool) string {
 	fmt.Fprintf(body, "<p style='font-weight:bold;'>from %v</p>", senderHorst)
 
 	return body.String()
-}
-
-func getAuth(relayHorst string) (auth smtp.Auth) {
-	if relayHorst == "zimbra.zew.de:25" {
-		// authentication information.
-		username := "fmt-relay"
-		password := "Qual32!Crux" // yes, you found a password, but its worthless without access to the company network
-		auth = smtp.PlainAuth("",
-			username,
-			password,
-			strings.Split(relayHorst, ":")[0],
-		)
-	}
-	return
 }
 
 func getFrom(senderHorst string) (addr mail.Address) {
