@@ -7,6 +7,7 @@ import (
 	"bytes"
 	"encoding/base64"
 	"fmt"
+	"log"
 	"mime"
 	"net/mail"
 	"net/smtp"
@@ -278,6 +279,7 @@ func (m *Message) Bytes() []byte {
 		// 	buf.WriteString("?=\"\r\n\r\n")
 
 		fmt.Fprintf(bf, "Content-Disposition: attachment; filename=%v;\r\n", cleanseFN(attachment.Filename))
+		log.Printf("mimetype for ext %v is %v - %v", ext, mimetype, cleanseFN(attachment.Filename))
 		fmt.Fprint(bf, "\r\n") // end sub-headers 1
 
 		b := make([]byte, base64.StdEncoding.EncodedLen(len(attachment.Data)))
