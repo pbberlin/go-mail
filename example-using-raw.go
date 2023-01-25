@@ -27,7 +27,7 @@ func ExampleRaw() {
 		fmt.Fprintf(bf, "To: %v \r\n", commaSep)
 		fmt.Fprint(bf, mimeHTML1)
 		fmt.Fprint(bf, mimeHTML2)
-		fmt.Fprintf(bf, getSubject(subject, relayHorst.HostNamePort)+"\r\n") // subject is the last header?
+		fmt.Fprint(bf, getSubject(subject, relayHorst.HostNamePort)+"\r\n") // subject is the last header?
 		// headers end
 
 		fmt.Fprint(bf, "\r\n")

@@ -152,7 +152,7 @@ func cleanseFN(fn string) string {
 	return fn + xt
 }
 
-func (m *Message) attach(label, file string, inline bool) error {
+func (m *Message) Attach(label, file string, inline bool) error {
 
 	data, err := os.ReadFile(file)
 	if err != nil {
@@ -177,6 +177,7 @@ func (m *Message) attach(label, file string, inline bool) error {
 	return nil
 }
 
+/*
 // Attach attaches a file.
 func (m *Message) Attach(label, file string) error {
 	return m.attach(label, file, false)
@@ -187,6 +188,7 @@ func (m *Message) Attach(label, file string) error {
 func (m *Message) AttachInline(label, file string) error {
 	return m.attach(label, file, true)
 }
+*/
 
 // AttachByteSlice - for binary attachment.
 func (m *Message) AttachByteSlice(filename string, buf []byte, inline bool) error {
@@ -277,7 +279,20 @@ func (m *Message) Bytes() []byte {
 		// 	buf.WriteString(coder.EncodeToString([]byte(attachment.Filename)))
 		// 	buf.WriteString("?=\"\r\n\r\n")
 
-		fmt.Fprintf(bf, "Content-Disposition: attachment; filename=%v;\r\n", cleanseFN(attachment.Filename))
+		if attachment.Inline {
+			// developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Disposition#as_a_header_for_a_multipart_body
+			// stackoverflow.com/questions/6706891
+			// Content-ID: <part1.06090408.01060107>
+
+			// notice the <filename> around content ID
+			//   use it later src="cid:filename"
+			fmt.Fprintf(bf, "Content-ID: <%v>;\r\n", cleanseFN(attachment.Filename))
+
+			// fmt.Fprintf(bf, "Content-Disposition: inline;\r\n")
+			fmt.Fprintf(bf, "Content-Disposition: inline; filename=%v\r\n", cleanseFN(attachment.Filename))
+		} else {
+			fmt.Fprintf(bf, "Content-Disposition: attachment; filename=%v;\r\n", cleanseFN(attachment.Filename))
+		}
 		fmt.Fprint(bf, "\r\n") // end sub-headers 1
 
 		b := make([]byte, base64.StdEncoding.EncodedLen(len(attachment.Data)))
