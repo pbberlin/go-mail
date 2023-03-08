@@ -66,12 +66,22 @@ func (rh RelayHorst) getAuth() (auth smtp.Auth) {
 		)
 	}
 
-	return smtp.PlainAuth(
-		"",
+	if false {
+		// this fails for exchange servers
+		return smtp.PlainAuth(
+			"",
+			rh.Username,
+			pw,
+			pureHost,
+		)
+
+	}
+
+	return Auth2(
 		rh.Username,
 		pw,
-		pureHost,
 	)
+
 }
 
 var relayHorsts = []RelayHorst{}
